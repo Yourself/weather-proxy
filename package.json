@@ -5,8 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pnpm exec tsc --project ./tsconfig.json",
-    "dev": "pnpm nodemon ./src/index.ts"
+    "build": "pnpm exec tsc",
+    "dev": "pnpm nodemon ./src/index.ts",
+    "start": "node ."
   },
   "keywords": [],
   "author": "Kyle Smith",
