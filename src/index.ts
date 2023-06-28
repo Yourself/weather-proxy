@@ -22,10 +22,7 @@ sock.on('message', (rawMsg) => {
     return;
   }
 
-  if (msg.type === 'rapid_wind') {
-    const data = getData(msg);
-    console.log(data);
-  } else if (msg.type === 'obs_st') {
+  if (msg.type === 'obs_st') {
     const data = getData(msg);
     postAirData(msg.serial_number, data);
   }
