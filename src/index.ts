@@ -12,6 +12,8 @@ async function postAirData(id: string, obs: StationObservation | AirObservation)
       body,
       headers: { 'Content-Type': 'application/json' },
     });
+  } else {
+    console.warn('API_ROOT not set');
   }
 }
 
@@ -27,4 +29,10 @@ sock.on('message', (rawMsg) => {
     postAirData(msg.serial_number, data);
   }
 });
+
+process.on('SIGINT', () => {
+  sock.close();
+  process.exit();
+});
+
 sock.bind(50222);

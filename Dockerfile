@@ -1,8 +1,6 @@
-FROM node:18
+FROM node:18-alpine AS BUILD
 
-ARG LISTEN_PORT=3000
-
-WORKDIR /home/breath-server
+WORKDIR /home/weather-proxy
 
 RUN npm install -g pnpm
 
@@ -14,8 +12,13 @@ COPY . .
 
 ENV NODE_PATH=./dist
 
-RUN pnpm run build
+RUN pnpm run build && NODE_ENV=production && pnpm install
 
-RUN NODE_ENV=production
+FROM node:18-alpine AS PRODUCTION
 
-RUN pnpm install
+WORKDIR /home/weather-proxy
+
+COPY --from=BUILD /home/weather-proxy/node_modules ./node_modules
+COPY --from=BUILD /home/weather-proxy/dist ./dist
+
+CMD ["node", "./dist/index.js"]
