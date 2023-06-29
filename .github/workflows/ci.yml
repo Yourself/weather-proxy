@@ -16,7 +16,7 @@ jobs:
     env:
       PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       TEST_TAG: docker.samsarabarandgrill.com/yourself/weather-proxy:test
-      LATEST_TAG: docker.samsarabarandgrill.com/yourself/weather-proxylatest
+      LATEST_TAG: docker.samsarabarandgrill.com/yourself/weather-proxy:latest
 
     steps:
       - name: Checkout
