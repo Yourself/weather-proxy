@@ -1,4 +1,5 @@
 import dgram from 'dgram';
+import os from 'os';
 import { parse } from './messages';
 import { AirObservation, StationObservation, getData } from './types';
 
@@ -35,4 +36,8 @@ process.on('SIGINT', () => {
   process.exit();
 });
 
-sock.bind(50222);
+const netIface = Object.values(os.networkInterfaces())
+  .flat()
+  .find((info) => info?.family === 'IPv4' && !info.internal);
+
+sock.bind(50222, netIface?.address);
