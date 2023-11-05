@@ -48,6 +48,6 @@ console.log('Found interface: ', netIface);
 const ip = NIC_IP ?? netIface?.address;
 
 sock.bind({ port: 50222, address: ip }, () => {
-  console.log(`Listening on ${sock.address()}`);
+  console.log(`Listening on ${sock.address().address}:${sock.address().port}`);
   sock.setBroadcast(true);
 });
