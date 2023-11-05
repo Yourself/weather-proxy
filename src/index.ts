@@ -33,7 +33,7 @@ sock.on('message', (rawMsg) => {
 });
 
 sock.on('error', (error) => {
-  console.log('Socket error:', error);
+  console.error('Socket error:', error);
 });
 
 process.on('SIGINT', () => {
