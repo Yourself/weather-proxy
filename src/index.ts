@@ -27,6 +27,7 @@ sock.on('message', (rawMsg) => {
 
   if (msg.type === 'obs_st') {
     const data = getData(msg);
+    console.log(data);
     postAirData(msg.serial_number, data);
   }
 });
@@ -47,7 +48,7 @@ const netIface = Object.values(os.networkInterfaces())
 console.log('Found interface: ', netIface);
 const ip = NIC_IP ?? netIface?.address;
 
-sock.bind({ port: 50222, address: ip }, () => {
+sock.bind({ port: 50222, address: ip, exclusive: false }, () => {
   console.log(`Listening on ${sock.address().address}:${sock.address().port}`);
   sock.setBroadcast(true);
 });
