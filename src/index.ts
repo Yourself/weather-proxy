@@ -32,6 +32,10 @@ sock.on('message', (rawMsg) => {
   }
 });
 
+sock.on('error', (error) => {
+  console.log('Socket error:', error);
+});
+
 process.on('SIGINT', () => {
   sock.close();
   process.exit();
