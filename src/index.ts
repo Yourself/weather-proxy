@@ -27,6 +27,7 @@ sock.on('message', (rawMsg) => {
 
   if (msg.type === 'obs_st') {
     const data = getData(msg);
+    console.log(data);
     postAirData(msg.serial_number, data);
   }
 });
