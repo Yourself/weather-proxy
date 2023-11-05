@@ -49,4 +49,4 @@ console.log('Found interface: ', netIface);
 const ip = NIC_IP ?? netIface?.address;
 
 console.log(`Binding to ${ip}`);
-sock.bind(50222, ip);
+sock.bind(50222);
