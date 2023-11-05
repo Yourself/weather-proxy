@@ -3,7 +3,7 @@ import os from 'os';
 import { parse } from './messages';
 import { AirObservation, StationObservation, getData } from './types';
 
-const { API_ROOT } = process.env;
+const { API_ROOT, NIC_IP } = process.env;
 
 async function postAirData(id: string, obs: StationObservation | AirObservation) {
   if (API_ROOT != null) {
@@ -40,4 +40,8 @@ const netIface = Object.values(os.networkInterfaces())
   .flat()
   .find((info) => info?.family === 'IPv4' && !info.internal);
 
-sock.bind(50222, netIface?.address);
+console.log('Found interface: ', netIface);
+const ip = NIC_IP ?? netIface?.address;
+
+console.log(`Binding to ${ip}`);
+sock.bind(50222, ip);
