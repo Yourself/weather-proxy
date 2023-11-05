@@ -1,9 +1,8 @@
 import dgram from 'dgram';
-import os from 'os';
 import { parse } from './messages';
 import { AirObservation, StationObservation, getData } from './types';
 
-const { API_ROOT, NIC_IP } = process.env;
+const { API_ROOT } = process.env;
 
 async function postAirData(id: string, obs: StationObservation | AirObservation) {
   if (API_ROOT != null) {
@@ -18,6 +17,9 @@ async function postAirData(id: string, obs: StationObservation | AirObservation)
   }
 }
 
+// For some dumbshit reason linux refuses to allow broadcast packets through if we bind to a specific interface, so we
+// have to instead just rate limit ourselves to not send more than one request with duplicate data.
+let lastReceived = Date.now();
 const sock = dgram.createSocket('udp4');
 sock.on('message', (rawMsg) => {
   const msg = parse(rawMsg);
@@ -26,9 +28,14 @@ sock.on('message', (rawMsg) => {
   }
 
   if (msg.type === 'obs_st') {
+    const now = Date.now();
+    if (now - lastReceived < 1000) {
+      return;
+    }
     const data = getData(msg);
     console.log(data);
     postAirData(msg.serial_number, data);
+    lastReceived = now;
   }
 });
 
@@ -41,14 +48,7 @@ process.on('SIGINT', () => {
   process.exit();
 });
 
-const netIface = Object.values(os.networkInterfaces())
-  .flat()
-  .find((info) => info?.family === 'IPv4' && !info.internal);
-
-console.log('Found interface: ', netIface);
-const ip = NIC_IP ?? netIface?.address;
-
-sock.bind({ port: 50222, address: ip, exclusive: false }, () => {
+sock.bind({ port: 50222, exclusive: false }, () => {
   console.log(`Listening on ${sock.address().address}:${sock.address().port}`);
   sock.setBroadcast(true);
 });
